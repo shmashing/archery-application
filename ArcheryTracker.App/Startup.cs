@@ -28,7 +28,6 @@ namespace ArcheryTracker.App
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<SessionService>();
         }
 

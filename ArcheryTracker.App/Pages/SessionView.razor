@@ -1,0 +1,54 @@
+@page "/Session/{SessionId}"
+@using ArcheryTracker.App.Data
+
+@inject SessionService SessionService
+
+<h1>@_session.Date.ToString("MMMM dd") Session</h1>
+
+<p>Total Shots: @_session.TotalShots</p>
+<p>Best round score: @_session.BestRoundScore</p>
+<p>Average round score: @_session.AverageRoundScore</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <td>Round</td>
+            <td>Shots</td>
+            <td>Total Score</td>
+            <td colspan="12">Arrow Scores</td>
+        </tr>
+    </thead>
+    <tbody>
+    
+    @foreach (var round in _session.RoundScores)
+    {
+        _roundCounter++;
+        <tr>
+            <td>@_roundCounter</td>
+            <td>@round.TotalShots</td>
+            <td>@round.TotalScore</td>
+            @foreach (var score in round.Scores)
+            {
+                <td>@score</td>
+            }
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public string SessionId { get; set; }
+    private Session _session { get; set; }
+    private int _roundCounter { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _roundCounter = 0;
+        var sessionId = int.Parse(SessionId);
+        if (SessionId != null)
+        {
+            _session = await SessionService.GetSession(sessionId);
+        }
+    }
+}

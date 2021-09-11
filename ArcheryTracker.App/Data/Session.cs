@@ -28,12 +28,12 @@ namespace ArcheryTracker.App.Data
             RoundScores = roundScores;
             NumberOfRounds = roundScores.Count;
             BestRoundScore = roundScores.Select(round => round.TotalScore).Max();
-            AverageRoundScore = roundScores.Select(round => round.TotalScore).Average();
             TotalShots = roundScores.Select(round => round.Scores.Count).Sum();
             TotalBullseye = roundScores.Select(round => round.Scores.Count(score => score == 2)).Sum();
             TotalOnTarget = roundScores.Select(round => round.Scores.Count(score => score > 0)).Sum();
             TotalMisses = roundScores.Select(round => round.Scores.Count(score => score == 0)).Sum();
             
+            AverageRoundScore = Math.Round(roundScores.Select(round => round.TotalScore).Average(), 0);
             AccuracyOnTarget = Math.Round(TotalOnTarget * 100.0 / TotalShots, 2);
             AccuracyBullseye = Math.Round(TotalBullseye * 100.0 / TotalShots, 2);
         }
