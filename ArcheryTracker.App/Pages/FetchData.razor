@@ -1,0 +1,52 @@
+﻿@page "/fetchdata"
+
+@using ArcheryTracker.App.Data
+@inject SessionService SessionService
+
+<h1>Sessions by Day</h1>
+
+@if (_sessions == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Range</th>
+                <th>Total Shots</th>
+                <th>Total Misses</th>
+                <th>Total On Target</th>
+                <th>Total Bullseye</th>
+                <th>On Target Accuracy</th>
+                <th>Bullseye Accuracy</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var session in _sessions)
+            {
+                <tr>
+                    <td><a href="/session/1">@string.Format($"{session.Date.Month}/{session.Date.Day}/{session.Date.Year}")</a></td>
+                    <td>@session.Range</td>
+                    <td>@session.TotalShots</td>
+                    <td>@session.TotalMisses</td>
+                    <td>@session.TotalOnTarget</td>
+                    <td>@session.TotalBullseye</td>
+                    <td>@session.AccuracyOnTarget</td>
+                    <td>@session.AccuracyBullseye</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Session> _sessions;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _sessions = await SessionService.GetSessions();
+    }
+}
