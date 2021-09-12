@@ -27,8 +27,9 @@ else
         <tbody>
             @foreach (var session in _sessions)
             {
+                var sessionUrl = $"/Session/{session.Id}";
                 <tr>
-                    <td><a href="/session/1">@string.Format($"{session.Date.Month}/{session.Date.Day}/{session.Date.Year}")</a></td>
+                    <td><a href=@sessionUrl>@string.Format($"{session.Date.Month}/{session.Date.Day}/{session.Date.Year}")</a></td>
                     <td>@session.Range</td>
                     <td>@session.TotalShots</td>
                     <td>@session.TotalMisses</td>

@@ -6,31 +6,32 @@ namespace ArcheryTracker.App.Data
 {
     public class SessionService
     {
-        private Random _rng;
+        private readonly Random _rng;
 
         public SessionService()
         {
             _rng = new Random();
         }
-        public Task<List<Session>> GetSessions()
+        public async Task<List<Session>> GetSessions()
         {
             var sessions = new List<Session>();
             for (var z = 0; z < 20; z++)
             {
-                sessions.Add(GetSession(z));
+                sessions.Add(await GetSession(z));
             }
             
-            return Task.FromResult(sessions);
+            return sessions;
         }
 
-        public Session GetSession(int id)
+        public Task<Session> GetSession(int id)
         {
             var numberOfRounds = _rng.Next(1, 20);
             var roundScores = new List<Round>();
             for (var i = 0; i < numberOfRounds; i++)
             {
                 var scores = new List<int>();
-                for (var j = 0; j < 6; j++)
+                var shotCount = _rng.Next(6, 13);
+                for (var j = 0; j < shotCount; j++)
                 {
                     scores.Add(_rng.Next(3));
                 }
@@ -38,7 +39,7 @@ namespace ArcheryTracker.App.Data
                 roundScores.Add(new Round(scores));
             }
             
-            return new Session(id, DateTime.Now, "20 ft", roundScores);
+            return Task.FromResult(new Session(id, DateTime.Now, "20 ft", roundScores));
         }
     }
 }
