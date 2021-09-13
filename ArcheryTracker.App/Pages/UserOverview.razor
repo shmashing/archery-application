@@ -1,0 +1,27 @@
+@page "/Overview"
+@using ArcheryTracker.App.Data
+@inject UserService UserService
+
+@if (_user == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>Total Shots: @_user.TotalShots</p>
+    <p>Shots Per Session: @_user.ShotsPerSession</p>
+    <p>Total Shots This Month: @_user.ShotsThisMonth</p>
+    <p>Overall Accuracy: @_user.OverallAccuracy%</p>
+    <p>Bullseye Percentage: @_user.OverallBullseyeAccuracy%</p>
+
+    <a class="nav-link" href="/mysessions">See my sessions</a>
+}
+
+@code {
+    private UserStats _user { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _user = await UserService.GetUser(1);
+    }
+}

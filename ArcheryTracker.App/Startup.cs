@@ -29,6 +29,7 @@ namespace ArcheryTracker.App
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<SessionService>();
+            services.AddSingleton<UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
