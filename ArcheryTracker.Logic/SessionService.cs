@@ -17,13 +17,14 @@ namespace ArcheryTracker.App.Data
             var sessions = new List<Session>();
             for (var z = 0; z < 20; z++)
             {
-                sessions.Add(await GetSession(z));
+                var id = $"ses_${Guid.NewGuid():N}";
+                sessions.Add(await GetSession(id));
             }
             
             return sessions;
         }
 
-        public Task<Session> GetSession(int id)
+        public Task<Session> GetSession(string id)
         {
             var numberOfRounds = _rng.Next(1, 20);
             var roundScores = new List<Round>();

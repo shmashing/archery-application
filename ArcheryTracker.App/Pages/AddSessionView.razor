@@ -1,0 +1,44 @@
+@page "/addsession"
+@using ArcheryTracker.App.Requests
+@using ArcheryTracker.Logic
+
+@inject NavigationManager NavigationManager
+@inject SessionService SessionService
+
+<EditForm Model="@_createSessionRequest" OnValidSubmit="@HandleFormSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    
+    <p class="form-group">Is this session today? 
+        <InputCheckbox class="checkbox-primary" @bind-Value="@_sessionIsToday"/></p>
+    <p>
+        <label>Range: <InputNumber @bind-Value="_createSessionRequest.Range"></InputNumber> yards</label>
+    </p>
+    @if (!_sessionIsToday)
+    {
+        <p>
+            <label>Date: <InputDate @bind-Value="_createSessionRequest.Date"></InputDate> </label>
+        </p>
+    }
+    <button type="submit" class="btn-main-primary">Continue <span class="oi oi-chevron-right" aria-hidden="true"></span></button>
+</EditForm>
+
+@code {
+    private CreateSessionRequest _createSessionRequest = new CreateSessionRequest()
+    {
+        Date = DateTime.Now.AddDays(-1),
+        Range = 10
+    };
+    private bool _sessionIsToday = true;
+
+    public async Task HandleFormSubmit()
+    {
+        if (_sessionIsToday)
+        {
+            _createSessionRequest.Date = DateTime.Now;
+        }
+
+        var sessionId = await SessionService.CreateSession(_createSessionRequest.ToSession());
+        NavigationManager.NavigateTo($"/Session/{sessionId}");
+    }
+}
