@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ArcheryTracker.App.Data
+namespace ArcheryTracker.Logic.Models
 {
     public class UserStats
     {

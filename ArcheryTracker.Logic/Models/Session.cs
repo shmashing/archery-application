@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ArcheryTracker.App.Data
+namespace ArcheryTracker.Logic.Models
 {
     public class Session
     {
         public string Id { get; set; }
+        public string UserId { get; set; }
         public DateTime Date { get; set; }
-        public string Range { get; set; }
+        public int Range { get; set; }
         public int NumberOfRounds { get; set; }
         public List<Round> RoundScores { get; set; }
         public int BestRoundScore { get; set; }
@@ -20,27 +21,36 @@ namespace ArcheryTracker.App.Data
         public double AccuracyOnTarget { get; set; }
         public double AccuracyBullseye { get; set; }
 
-        public Session(DateTime date, String range)
+        public Session(String id, DateTime date, int range)
         {
-            Id = Guid.NewGuid().ToString("N");
+            Id = id;
             Date = date;
             Range = range;
 
         }
-        public Session(string id, DateTime date, string range, List<Round> roundScores)
+        public Session(string id, DateTime date, int range, List<Round> roundScores)
         {
             Id = id;
             Date = date;
             Range = range;
             RoundScores = roundScores;
             NumberOfRounds = roundScores.Count;
-            BestRoundScore = roundScores.Select(round => round.TotalScore).Max();
-            TotalShots = roundScores.Select(round => round.Scores.Count).Sum();
-            TotalBullseye = roundScores.Select(round => round.Scores.Count(score => score == 2)).Sum();
-            TotalOnTarget = roundScores.Select(round => round.Scores.Count(score => score > 0)).Sum();
-            TotalMisses = roundScores.Select(round => round.Scores.Count(score => score == 0)).Sum();
+        }
+
+        public void CalculateStats()
+        {
+            if (NumberOfRounds == 0)
+            {
+                return;
+            }
             
-            AverageRoundScore = Math.Round(roundScores.Select(round => round.TotalScore).Average(), 0);
+            BestRoundScore = RoundScores.Select(round => round.TotalScore).Max();
+            TotalShots = RoundScores.Select(round => round.Scores.Count).Sum();
+            TotalBullseye = RoundScores.Select(round => round.Scores.Count(score => score == 2)).Sum();
+            TotalOnTarget = RoundScores.Select(round => round.Scores.Count(score => score > 0)).Sum();
+            TotalMisses = RoundScores.Select(round => round.Scores.Count(score => score == 0)).Sum();
+            
+            AverageRoundScore = Math.Round(RoundScores.Select(round => round.TotalScore).Average(), 0);
             AccuracyOnTarget = Math.Round(TotalOnTarget * 100.0 / TotalShots, 2);
             AccuracyBullseye = Math.Round(TotalBullseye * 100.0 / TotalShots, 2);
         }
