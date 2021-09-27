@@ -1,10 +1,11 @@
 using System.Threading.Tasks;
+using ArcheryTracker.Logic.Models;
 
-namespace ArcheryTracker.App.Data
+namespace ArcheryTracker.Logic
 {
     public class UserService
     {
-        private SessionService _sessionService;
+        private readonly SessionService _sessionService;
 
         public UserService(SessionService sessionService)
         {
