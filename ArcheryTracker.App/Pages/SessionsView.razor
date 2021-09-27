@@ -1,9 +1,12 @@
 ﻿@page "/mysessions"
+@using ArcheryTracker.Logic.Models
+@using ArcheryTracker.Logic
 
-@using ArcheryTracker.App.Data
 @inject SessionService SessionService
 
 <h1>Sessions by Day</h1>
+
+<button class="btn-main-primary d-inline">Start session</button>
 
 @if (_sessions == null)
 {
@@ -25,20 +28,20 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var session in _sessions)
-            {
-                var sessionUrl = $"/Session/{session.Id}";
-                <tr>
-                    <td><a href=@sessionUrl>@string.Format($"{session.Date.Month}/{session.Date.Day}/{session.Date.Year}")</a></td>
-                    <td>@session.Range</td>
-                    <td>@session.TotalShots</td>
-                    <td>@session.TotalMisses</td>
-                    <td>@session.TotalOnTarget</td>
-                    <td>@session.TotalBullseye</td>
-                    <td>@session.AccuracyOnTarget</td>
-                    <td>@session.AccuracyBullseye</td>
-                </tr>
-            }
+             @foreach (var session in _sessions)
+             {
+                 var sessionUrl = $"/Session/{session.Id}";
+                 <tr>
+                     <td><a href=@sessionUrl>@string.Format($"{session.Date.Month}/{session.Date.Day}/{session.Date.Year}")</a></td>
+                     <td>@session.Range</td>
+                     <td>@session.TotalShots</td>
+                     <td>@session.TotalMisses</td>
+                     <td>@session.TotalOnTarget</td>
+                     <td>@session.TotalBullseye</td>
+                     <td>@session.AccuracyOnTarget</td>
+                     <td>@session.AccuracyBullseye</td>
+                 </tr>
+             }
         </tbody>
     </table>
 }

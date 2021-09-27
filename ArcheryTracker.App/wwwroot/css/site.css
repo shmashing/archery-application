@@ -8,10 +8,37 @@ a, .btn-link {
     color: #0366d6;
 }
 
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+.btn-main-primary {
+    border-radius: .7rem;
+
+    color: #5E548E;
+    border-color: #231942;
+    background-color: #F3F2F8;
+}
+
+.btn-main-primary:hover {
+    color: #F3F2F8;
+    border-color: #231942;
+    background-color: #5E548E;
+}
+
+.btn-flat-primary {
+    border-width: 0rem;
+    color: #5E548E;
+    background-color: #F3F2F8;
+}
+
+.btn-flat-primary:hover {
+    border-width: 0rem;
+    color: #5E548E;
+}
+
+.checkbox-primary {
+    color: #F3F2F8;
+}
+
+.checkbox-primary input:checked {
+    color:#5E548E;
 }
 
 app {
@@ -31,8 +58,8 @@ app {
 }
 
     .main .top-row {
-        background-color: #f7f7f7;
-        border-bottom: 1px solid #d6d5d5;
+        background-color: #F3F2F8;
+        border-bottom: 1px solid #DAD7EA;
         justify-content: flex-end;
     }
 
@@ -47,7 +74,7 @@ app {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-image: linear-gradient(180deg, #A9A3C3 0%, #231942 70%);
 }
 
     .sidebar .top-row {
@@ -79,7 +106,7 @@ app {
         }
 
         .sidebar .nav-item a {
-            color: #d7d7d7;
+            color: #F3F2F8;
             border-radius: 4px;
             height: 3rem;
             display: flex;
@@ -89,16 +116,17 @@ app {
 
             .sidebar .nav-item a.active {
                 background-color: rgba(255,255,255,0.25);
-                color: white;
+                color: #F3F2F8;
             }
 
             .sidebar .nav-item a:hover {
                 background-color: rgba(255,255,255,0.1);
-                color: white;
+                color: #F3F2F8;
             }
 
 .content {
     padding-top: 1.1rem;
+    background-color: #F3F2F8;
 }
 
 .navbar-toggler {

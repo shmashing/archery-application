@@ -6,9 +6,9 @@ namespace ArcheryTracker.App.Data
 {
     public class Session
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public DateTime Date { get; set; }
-        public String Range { get; set; }
+        public string Range { get; set; }
         public int NumberOfRounds { get; set; }
         public List<Round> RoundScores { get; set; }
         public int BestRoundScore { get; set; }
@@ -20,7 +20,14 @@ namespace ArcheryTracker.App.Data
         public double AccuracyOnTarget { get; set; }
         public double AccuracyBullseye { get; set; }
 
-        public Session(int id, DateTime date, String range, List<Round> roundScores)
+        public Session(DateTime date, String range)
+        {
+            Id = Guid.NewGuid().ToString("N");
+            Date = date;
+            Range = range;
+
+        }
+        public Session(string id, DateTime date, string range, List<Round> roundScores)
         {
             Id = id;
             Date = date;

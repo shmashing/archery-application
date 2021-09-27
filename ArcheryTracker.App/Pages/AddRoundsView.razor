@@ -1,0 +1,81 @@
+@page "/Session/{SessionId}/AddRound"
+@using ArcheryTracker.Logic.Models
+@using ArcheryTracker.Logic
+@using ArcheryTracker.App.Requests
+
+
+@inject NavigationManager NavigationManager
+@inject SessionService SessionService
+
+@if (_loading)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    if (!_loading && _session == null)
+    {
+        RedirectToCreateSessionPage();
+    }
+    
+    <EditForm Model="@_createRoundRequest" OnValidSubmit="@HandleValidFormSubmit">
+        <div @ref=_arrowScoreReference>
+            @for(var i = 0; i < _scores.Count; i ++)
+            {
+                var arrowNumber = i;
+                var arrowLabel = $"Arrow {arrowNumber + 1}";
+                var arrowClass = $"arrow-{i}";
+                <p><label class="@arrowClass">@arrowLabel: <input @bind="_scores[arrowNumber]"/> </label></p>
+            }
+        </div>
+            <button @onclick="AddArrow" type="button" class="btn-flat-primary">
+                <span class="oi oi-plus" aria-hidden="true"></span> Add Arrow</button>
+        <button class="btn-main-primary" type="submit">Add Round</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string SessionId { get; set; }
+
+    public ElementReference _arrowScoreReference;
+    
+    public CreateRoundRequest _createRoundRequest = new CreateRoundRequest();
+
+    private Session _session;
+    private int _score;
+    private List<int> _scores = new List<int>();
+    private bool _loading = true;
+    private int _arrowCount = 1;
+    private bool _addAnotherShot = true;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        if (SessionId != null)
+        {
+            _session = await SessionService.GetSession(SessionId);
+            _createRoundRequest.SessionId = _session.Id;
+            _scores.Add(0);
+            _loading = false;
+        }
+    }
+
+    public void RedirectToCreateSessionPage()
+    {
+        NavigationManager.NavigateTo("/addsession");
+    }
+
+    public void AddArrow()
+    {
+        _scores.Add(0);
+    }
+
+    public async Task HandleValidFormSubmit()
+    {
+        _createRoundRequest.Scores = _scores;
+
+        await SessionService.AddRoundToSession(_session.Id, _createRoundRequest.ToRound());
+        
+        NavigationManager.NavigateTo($"/Session/{_session.Id}");
+    }
+}
