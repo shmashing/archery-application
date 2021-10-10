@@ -24,12 +24,13 @@ else
     
     @if (_session.RoundScores != null && _session.RoundScores.Count != 0)
     {
+        <div class="table-responsive">
         <table class="table">
             <thead>
-            <tr>
+            <tr class="d-md-table-row">
                 <td>Round</td>
                 <td>Shots</td>
-                <td>Total Score</td>
+                <td class="d-flex">Total Score</td>
                 <td colspan="12">Arrow Scores</td>
             </tr>
             </thead>
@@ -38,7 +39,7 @@ else
             @foreach (var round in _session.RoundScores)
             {
                 _roundCounter++;
-                <tr>
+                <tr class="d-md-table-row flex-md-wrap">
                     <td>@_roundCounter</td>
                     <td>@round.TotalShots</td>
                     <td>@round.TotalScore</td>
@@ -50,12 +51,13 @@ else
             }
             </tbody>
         </table>
+        </div>
     }
     else
     {
-        <p>Looks like this session is empty.</p>
+        <p class="text-body"> <span class="text-warning">Looks like this session is empty.</span> Add some scores below</p>
     }
-    <a href=@_addRoundUri>Add scores <span class="oi oi-chevron-right"></span></a>
+    <a href=@_addRoundUri class="nav-link">Add scores <span class="oi oi-chevron-right"></span></a>
 
 }
 
