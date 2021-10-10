@@ -25,7 +25,7 @@ else
                 var arrowNumber = i;
                 var arrowLabel = $"Arrow {arrowNumber + 1}";
                 var arrowClass = $"arrow-{i}";
-                <p><label class="@arrowClass">@arrowLabel: <input @bind="_scores[arrowNumber]"/> </label></p>
+                <p><label class="@arrowClass">@arrowLabel: <input type="number" @bind="_scores[arrowNumber]"/> </label></p>
             }
         </div>
             <button @onclick="AddArrow" type="button" class="btn-flat-primary">
