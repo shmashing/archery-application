@@ -5,6 +5,8 @@
 @inject NavigationManager NavigationManager
 @inject SessionService SessionService
 
+@attribute [Authorize]
+
 <h1>@_session.Date.ToString("MMMM dd") Session</h1>
 
 <p>Total Shots: @_session.TotalShots</p>

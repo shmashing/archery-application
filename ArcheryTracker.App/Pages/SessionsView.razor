@@ -1,8 +1,12 @@
 ﻿@page "/mysessions"
 @using ArcheryTracker.Logic.Models
 @using ArcheryTracker.Logic
+@using ArcheryTracker.App.Util
 
 @inject SessionService SessionService
+@inject IdentityService IdentityService
+
+@attribute [Authorize]
 
 <h1>Sessions by Day</h1>
 
@@ -49,10 +53,12 @@ else
 }
 
 @code {
+    private string _userId;
     private List<Session> _sessions;
 
     protected override async Task OnInitializedAsync()
     {
-        _sessions = await SessionService.GetSessions();
+        _userId = await IdentityService.GetClaim("nameidentifier");
+        _sessions = await SessionService.GetSessionsForUser(_userId);
     }
 }

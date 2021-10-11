@@ -12,9 +12,10 @@ namespace ArcheryTracker.Logic
             _sessionService = sessionService;
         }
         
-        public async Task<UserStats> GetUser(int id)
+        public async Task<UserStats> GetUser(string id)
         {
-            var sessions = await _sessionService.GetSessions();
+            var sessions = await _sessionService.GetSessionsForUser(id);
+            sessions.ForEach(s => s.CalculateStats());
             return new UserStats(id, sessions);
         }
     }

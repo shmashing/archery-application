@@ -21,16 +21,18 @@ namespace ArcheryTracker.Logic.Models
         public double AccuracyOnTarget { get; set; }
         public double AccuracyBullseye { get; set; }
 
-        public Session(String id, DateTime date, int range)
+        public Session(String id, String userId, DateTime date, int range)
         {
             Id = id;
+            UserId = userId;
             Date = date;
             Range = range;
 
         }
-        public Session(string id, DateTime date, int range, List<Round> roundScores)
+        public Session(string id, String userId, DateTime date, int range, List<Round> roundScores)
         {
             Id = id;
+            UserId = userId;
             Date = date;
             Range = range;
             RoundScores = roundScores;

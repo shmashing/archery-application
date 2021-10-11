@@ -15,12 +15,14 @@ namespace ArcheryTracker.App.Requests
         [Range(1, 1000, ErrorMessage = "Invalid Range Provided: Must be between 1 and 1000")]
         public int Range { get; set; }
         
+        public string UserId { get; set; }
+        
         public CreateSessionRequest() {}
         
         public Session ToSession()
         {
             var id = IdService.GetId(typeof(Session));
-            var session = new Session(id, Date, Range);
+            var session = new Session(id, UserId, Date, Range);
             session.RoundScores = new List<Round>();
             return session;
         }
