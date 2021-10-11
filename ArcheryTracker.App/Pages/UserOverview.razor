@@ -1,7 +1,12 @@
 @page "/Overview"
 @using ArcheryTracker.Logic
 @using ArcheryTracker.Logic.Models
+@using System.Security.Claims
+
 @inject UserService UserService
+@inject AuthenticationStateProvider AuthProvider
+
+@attribute [Authorize]
 
 @if (_user == null)
 {
@@ -20,9 +25,20 @@ else
 
 @code {
     private UserStats _user { get; set; }
+    private ClaimsPrincipal _userIdentity;
 
     protected override async Task OnInitializedAsync()
     {
-        _user = await UserService.GetUser(1);
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        _userIdentity = authState.User;
+        var userId = getClaimFromIdentity("nameidentifier", _userIdentity.Claims);
+        
+        _user = await UserService.GetUser(userId);
+    }
+
+    private string getClaimFromIdentity(string claimName, IEnumerable<Claim> claims)
+    {
+        var claim = claims.FirstOrDefault(c => c.Type.Contains(claimName));
+        return claim?.Value;
     }
 }

@@ -5,6 +5,8 @@
 @inject NavigationManager NavigationManager
 @inject SessionService SessionService
 
+@attribute [Authorize]
+
 <EditForm Model="@_createSessionRequest" OnValidSubmit="@HandleFormSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
