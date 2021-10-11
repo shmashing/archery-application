@@ -1,9 +1,11 @@
 @page "/addsession"
 @using ArcheryTracker.App.Requests
+@using ArcheryTracker.App.Util
 @using ArcheryTracker.Logic
 
 @inject NavigationManager NavigationManager
 @inject SessionService SessionService
+@inject IdentityService IdentityService
 
 @attribute [Authorize]
 
@@ -40,6 +42,8 @@
             _createSessionRequest.Date = DateTime.Now;
         }
 
+        var userId = await IdentityService.GetClaim("nameidentifier");
+        _createSessionRequest.UserId = userId;
         var sessionId = await SessionService.CreateSession(_createSessionRequest.ToSession());
         NavigationManager.NavigateTo($"/Session/{sessionId}");
     }

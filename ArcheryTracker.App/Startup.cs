@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using ArcheryTracker.App.Controllers;
+using ArcheryTracker.App.Util;
 using ArcheryTracker.Logic;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -32,7 +32,7 @@ namespace ArcheryTracker.App
             
             services.AddSingleton<SessionService>();
             services.AddSingleton<UserService>();
-            services.AddSingleton<AccountController>();
+            services.AddScoped<IdentityService>();
             
             services.Configure<CookiePolicyOptions>(options =>
             {
