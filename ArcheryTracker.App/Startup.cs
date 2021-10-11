@@ -56,7 +56,7 @@ namespace ArcheryTracker.App
                     // Configure the Auth0 Client ID and Client Secret
                     options.ClientId = Configuration["Auth0:ClientId"];
                     options.ClientSecret = Environment.GetEnvironmentVariable("Auth0ClientSecret");
-
+                    
                     // Set response type to code
                     options.ResponseType = OpenIdConnectResponseType.Code;
 
