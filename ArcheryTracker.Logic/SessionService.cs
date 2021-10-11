@@ -60,10 +60,11 @@ namespace ArcheryTracker.Logic
             return newSession.Id;
         }
 
-        public async Task<List<Session>> GetSessions()
+        public async Task<List<Session>> GetSessionsForUser(string userId)
         {
-            _sessions.ForEach(s => s.CalculateStats());
-            return _sessions;
+            var usersSessions = _sessions.Where(s => s.UserId == userId).ToList();
+            usersSessions.ForEach(s => s.CalculateStats());
+            return usersSessions;
         }
         public async Task<Session> GetSession(string id)
         {

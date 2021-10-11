@@ -14,7 +14,7 @@ namespace ArcheryTracker.Logic
         
         public async Task<UserStats> GetUser(string id)
         {
-            var sessions = await _sessionService.GetSessions();
+            var sessions = await _sessionService.GetSessionsForUser(id);
             return new UserStats(id, sessions);
         }
     }

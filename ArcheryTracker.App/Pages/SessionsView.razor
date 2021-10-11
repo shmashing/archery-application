@@ -55,6 +55,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _sessions = await SessionService.GetSessions();
+        _sessions = await SessionService.GetSessionsForUser();
     }
 }
