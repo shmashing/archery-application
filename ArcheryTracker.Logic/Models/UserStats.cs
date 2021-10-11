@@ -6,7 +6,7 @@ namespace ArcheryTracker.Logic.Models
 {
     public class UserStats
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public List<Session> Sessions { get; set; }
         
         public int TotalShots { get; set; }
@@ -18,7 +18,7 @@ namespace ArcheryTracker.Logic.Models
         public double PreviousOverallAccuracy { get; set; }
         public double OverallBullseyeAccuracy { get; set; }
 
-        public UserStats(int id, List<Session> sessions)
+        public UserStats(string id, List<Session> sessions)
         {
             Id = id;
             Sessions = new List<Session>();
