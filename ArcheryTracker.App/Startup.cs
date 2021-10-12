@@ -57,7 +57,7 @@ namespace ArcheryTracker.App
                     options.ClientId = Configuration["Auth0:ClientId"];
                     options.ClientSecret = Environment.GetEnvironmentVariable("Auth0ClientSecret");
 
-                    Console.WriteLine("deploying v1.0.0");
+                    Console.WriteLine("deploying v1.0.1");
                     Console.WriteLine($"Domain: {Configuration["Auth0:Domain"]}");
                     Console.WriteLine($"Client Id: {Configuration["Auth0:ClientId"]}");
                     Console.WriteLine($"Client Secret: {Environment.GetEnvironmentVariable("Auth0ClientSecret")}");
