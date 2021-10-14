@@ -57,7 +57,7 @@ namespace ArcheryTracker.App
                     options.ClientId = Configuration["Auth0:ClientId"];
                     options.ClientSecret = Environment.GetEnvironmentVariable("Auth0ClientSecret");
 
-                    Console.WriteLine("deploying v1.0.1");
+                    Console.WriteLine("deploying v1.0.2");
                     Console.WriteLine($"Domain: {Configuration["Auth0:Domain"]}");
                     Console.WriteLine($"Client Id: {Configuration["Auth0:ClientId"]}");
                     Console.WriteLine($"Client Secret: {Environment.GetEnvironmentVariable("Auth0ClientSecret")}");
@@ -111,6 +111,12 @@ namespace ArcheryTracker.App
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.Use((context, next) =>
+            {
+                context.Request.Scheme = "https";
+                return next();
+            });
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
