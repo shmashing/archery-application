@@ -37,8 +37,10 @@ namespace ArcheryTracker.App
             
             // Register Database Connection
             var connectionString = ParseConnection(Environment.GetEnvironmentVariable("DATABASE_URL"));
-            services.AddDbContext<DatabaseContext>(options => 
-                options.UseNpgsql(connectionString,b => b.MigrationsAssembly("ArcheryTracker.App")));
+            services.AddDbContext<DatabaseContext>(options =>
+            {
+                options.UseNpgsql(connectionString, b => b.MigrationsAssembly("ArcheryTracker.App"));
+            });
             
             // Register Data Repositories
             services.AddTransient<UserRepository>();

@@ -43,11 +43,8 @@ else
     public CreateRoundRequest _createRoundRequest = new CreateRoundRequest();
 
     private Session _session;
-    private int _score;
     private List<int> _scores = new List<int>();
     private bool _loading = true;
-    private int _arrowCount = 1;
-    private bool _addAnotherShot = true;
     
     protected override async Task OnInitializedAsync()
     {
