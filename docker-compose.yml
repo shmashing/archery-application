@@ -1,0 +1,11 @@
+version: "2"
+services:
+  archer_db:
+    image: postgres:14.2-alpine
+    environment:
+      - POSTGRES_DB=ArcheryDB
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker_pw
+    ports:
+      - 5432:5432
+      

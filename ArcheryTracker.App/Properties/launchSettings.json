@@ -20,7 +20,16 @@
       "launchBrowser": true,
       "applicationUrl": "https://localhost:5001",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "ArcheryTracker.App (Local)": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:5001",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Auth0ClientSecret": "gWQyxEOHaaEb0JoMuHEPTTwmRHNUiLb5Zvz-ILk4WZ2lgtEVQg_iLNQtms5q4kTE"
       }
     }
   }

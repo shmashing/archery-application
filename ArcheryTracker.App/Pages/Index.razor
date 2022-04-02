@@ -1,7 +1,32 @@
 ﻿@page "/"
+@using ArcheryTracker.Logic
+@using ArcheryTracker.Logic.Models
+@using ArcheryTracker.App.Util
 
-<h1>Hello, world!</h1>
+@inject UserService UserService
+@inject IdentityService IdentityService
 
-Welcome to your new app.
+@attribute [Authorize]
 
-<a class="nav-link" href="/Overview">Take me to my homepage</a>
+@if (_user == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>Total Shots: [placeholder]</p>
+    <p>Shots Per Session: [placeholder]</p>
+    <p>Total Shots This Month: [placeholder]</p>
+    <p>Overall Accuracy: [placeholder]</p>
+    <p>Bullseye Percentage: [placeholder]</p>
+}
+
+@code {
+    private User _user { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = await IdentityService.GetLoggedInUserId();
+        _user = await UserService.GetUser(userId, "kyle", "fake_email");
+    }
+}

@@ -9,10 +9,6 @@
 
 <h1>@_session.Date.ToString("MMMM dd") Session</h1>
 
-<p>Total Shots: @_session.TotalShots</p>
-<p>Best round score: @_session.BestRoundScore</p>
-<p>Average round score: @_session.AverageRoundScore</p>
-
 @if (_loading)
 {
     <p><em>Loading...</em></p>
@@ -24,7 +20,11 @@ else
         NavigationManager.NavigateTo("/NotFound");
     }
     
-    @if (_session.RoundScores != null && _session.RoundScores.Count != 0)
+    <p>Total Shots: [placeholder]</p>
+    <p>Best round score: [placeholder]</p>
+    <p>Average round score: [placeholder]</p>
+                                                       
+    @if (_rounds != null && _rounds.Count != 0)
     {
         <div class="table-responsive">
         <table class="table">
@@ -38,13 +38,13 @@ else
             </thead>
             <tbody>
     
-            @foreach (var round in _session.RoundScores)
+            @foreach (var round in _rounds)
             {
                 _roundCounter++;
                 <tr class="d-md-table-row flex-md-wrap">
                     <td>@_roundCounter</td>
-                    <td>@round.TotalShots</td>
-                    <td>@round.TotalScore</td>
+                    <td>@round.Scores.Count</td>
+                    <td>@round.Scores.Sum()</td>
                     @foreach (var score in round.Scores)
                     {
                         <td>@score</td>
@@ -67,16 +67,19 @@ else
     [Parameter]
     public string SessionId { get; set; }
     private Session _session { get; set; }
+    private List<Round> _rounds { get; set; }
     private int _roundCounter { get; set; }
     private string _addRoundUri;
     private bool _loading = true;
 
     protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine("initializing session view");
         _roundCounter = 0;
         if (SessionId != null)
         {
             _session = await SessionService.GetSession(SessionId);
+            _rounds = await SessionService.GetRoundsForSession(SessionId);
             _addRoundUri = $"/Session/{_session.Id}/AddRound";
             _loading = false;
         }

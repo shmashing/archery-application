@@ -84,6 +84,11 @@ app {
     .sidebar .navbar-brand {
         font-size: 1.1rem;
     }
+    
+    .sidebar .navbar-logo {
+        height: 2rem;
+        width: 2rem;
+    }
 
     .sidebar .oi {
         width: 2rem;

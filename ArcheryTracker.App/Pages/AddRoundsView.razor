@@ -21,7 +21,7 @@ else
     }
     
     <EditForm Model="@_createRoundRequest" OnValidSubmit="@HandleValidFormSubmit">
-        <div @ref=_arrowScoreReference>
+        <div>
             @for(var i = 0; i < _scores.Count; i ++)
             {
                 var arrowNumber = i;
@@ -39,8 +39,6 @@ else
 @code {
     [Parameter]
     public string SessionId { get; set; }
-
-    public ElementReference _arrowScoreReference;
     
     public CreateRoundRequest _createRoundRequest = new CreateRoundRequest();
 

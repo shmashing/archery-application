@@ -3,53 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArcheryTracker.Logic.Models;
+using ArcheryTracker.Logic.Repository;
 
 namespace ArcheryTracker.Logic
 {
     public class SessionService
     {
-        private readonly Random _rng;
-        private List<Session> _sessions;
-        
-        public SessionService()
-        {
-            _rng = new Random();
-            _sessions = new List<Session>();
-        }
+        private readonly SessionRepository _sessionRepository;
+        private readonly RoundRepository _roundRepository;
 
+        public SessionService(SessionRepository sessionRepository, RoundRepository roundRepository)
+        {
+            _sessionRepository = sessionRepository;
+            _roundRepository = roundRepository;
+        }
+        
         public async Task<string> CreateSession(Session newSession)
         {
-            _sessions.Add(newSession);
+            await _sessionRepository.CreateSession(newSession);
             return newSession.Id;
         }
 
         public async Task<List<Session>> GetSessionsForUser(string userId)
         {
-            var usersSessions = _sessions.Where(s => s.UserId == userId).ToList();
-            usersSessions.ForEach(s => s.CalculateStats());
-            return usersSessions;
+            return await _sessionRepository.GetSessionsForUser(userId);
         }
         
         public async Task<Session> GetSession(string id)
         {
-            var session = _sessions.FirstOrDefault(s => s.Id == id);
+            return await _sessionRepository.GetSession(id);
+        }
 
-            if (session == null)
-            {
-                return null;
-            }
-            
-            session.CalculateStats();
-            return session;
+        public async Task<List<Round>> GetRoundsForSession(string sessionId)
+        {
+            return await _roundRepository.GetRoundsForSession(sessionId);
         }
 
         public async Task<Session> AddRoundToSession(string sessionId, Round round)
         {
-            var session = await GetSession(sessionId);
-            session.RoundScores.Add(round);
-            session.CalculateStats();
-
-            return session;
+            await _roundRepository.CreateRound(round);
+            return await _sessionRepository.GetSession(sessionId);
         }
     }
 }
