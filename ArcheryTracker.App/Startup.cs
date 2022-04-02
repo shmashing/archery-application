@@ -2,15 +2,19 @@ using System;
 using System.Threading.Tasks;
 using ArcheryTracker.App.Util;
 using ArcheryTracker.Logic;
+using ArcheryTracker.Logic.Database;
+using ArcheryTracker.Logic.Repository;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ArcheryTracker.App
 {
@@ -27,18 +31,39 @@ namespace ArcheryTracker.App
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // Register ASP.NET and Blazor Components
             services.AddRazorPages();
             services.AddServerSideBlazor();
             
-            services.AddSingleton<SessionService>();
-            services.AddSingleton<UserService>();
+            // Register Database Connection
+            var connectionString = ParseConnection(Environment.GetEnvironmentVariable("DATABASE_URL"));
+            services.AddDbContext<DatabaseContext>(options => 
+                options.UseNpgsql(connectionString,b => b.MigrationsAssembly("ArcheryTracker.App")));
+            
+            // Register Data Repositories
+            services.AddTransient<UserRepository>();
+            services.AddTransient<SessionRepository>();
+            services.AddTransient<UserStatsRepository>();
+            services.AddTransient<RoundRepository>();
+            
+            // Register Services
+            services.AddTransient<SessionService>();
+            services.AddTransient<UserService>();
+
+            // Register Utilities and Helpers
             services.AddScoped<IdentityService>();
             
+            // Configure Auth0
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
                 options.Secure = CookieSecurePolicy.SameAsRequest;
+            });
+
+            services.AddExceptionHandler(options =>
+            {
+                options.ExceptionHandlingPath = "/error";
             });
             
             services.AddAuthentication(options =>
@@ -55,16 +80,11 @@ namespace ArcheryTracker.App
 
                     // Configure the Auth0 Client ID and Client Secret
                     options.ClientId = Configuration["Auth0:ClientId"];
-                    options.ClientSecret = Environment.GetEnvironmentVariable("Auth0ClientSecret");
-
-                    Console.WriteLine("deploying v1.0.2");
-                    Console.WriteLine($"Domain: {Configuration["Auth0:Domain"]}");
-                    Console.WriteLine($"Client Id: {Configuration["Auth0:ClientId"]}");
-                    Console.WriteLine($"Client Secret: {Environment.GetEnvironmentVariable("Auth0ClientSecret")}");
+                    options.ClientSecret =  Environment.GetEnvironmentVariable("Auth0ClientSecret");
                     
                     // Set response type to code
                     options.ResponseType = OpenIdConnectResponseType.Code;
-
+                    
                     // Configure the scope
                     options.Scope.Clear();
                     options.Scope.Add("openid");
@@ -144,6 +164,22 @@ namespace ArcheryTracker.App
             });
 
             app.UseHttpsRedirection();
+        }
+        
+        private string ParseConnection(string connectionUri)
+        {
+            // Get connection string for local development
+            if (string.IsNullOrEmpty(connectionUri))
+            {
+                return Configuration.GetConnectionString("ArcheryDatabase");
+            }
+            var uri = new Uri(connectionUri);
+            var database = uri.AbsolutePath.Trim('/');
+            var user = uri.UserInfo.Split(':')[0];
+            var password = uri.UserInfo.Split(':')[1];
+            var port = uri.Port > 0 ? uri.Port : 5432;
+            var connectionString = $"Server={uri.Host};Database={database};User Id={user};Password={password};Port={port}";
+            return connectionString;
         }
     }
 }

@@ -10,11 +10,7 @@ namespace ArcheryTracker.App.Requests
     {
         [Required]
         public DateTime Date { get; set; }
-        
-        [Required]
-        [Range(1, 1000, ErrorMessage = "Invalid Range Provided: Must be between 1 and 1000")]
-        public int Range { get; set; }
-        
+
         public string UserId { get; set; }
         
         public CreateSessionRequest() {}
@@ -22,8 +18,7 @@ namespace ArcheryTracker.App.Requests
         public Session ToSession()
         {
             var id = IdService.GetId(typeof(Session));
-            var session = new Session(id, UserId, Date, Range);
-            session.RoundScores = new List<Round>();
+            var session = new Session(id, UserId, Date);
             return session;
         }
     }
