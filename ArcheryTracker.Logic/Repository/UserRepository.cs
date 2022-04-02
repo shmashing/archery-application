@@ -26,7 +26,7 @@ namespace ArcheryTracker.Logic.Repository
         public async Task UpdateUserLogin(string userId)
         {
             var user = await _databaseContext.Users.FindAsync(userId);
-            user.LastLogin = DateTime.Now;
+            user.LastLogin = DateTime.Now.ToUniversalTime();
 
             _databaseContext.Users.Update(user);
             await _databaseContext.SaveChangesAsync();
