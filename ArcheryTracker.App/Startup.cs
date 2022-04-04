@@ -2,9 +2,11 @@ using System;
 using System.Threading.Tasks;
 using ArcheryTracker.App.Util;
 using ArcheryTracker.Logic;
+using ArcheryTracker.Logic.Config;
 using ArcheryTracker.Logic.Database;
 using ArcheryTracker.Logic.Repository;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +33,13 @@ namespace ArcheryTracker.App
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var auth0Config = new Auth0Config()
+            {
+                Domain = $"https://{Configuration["Auth0:Domain"]}",
+                ClientId = Configuration["Auth0:ClientId"],
+                ClientSecret = Environment.GetEnvironmentVariable("Auth0ClientSecret")
+            };
+            
             // Register ASP.NET and Blazor Components
             services.AddRazorPages();
             services.AddServerSideBlazor();
@@ -78,19 +87,20 @@ namespace ArcheryTracker.App
                 .AddOpenIdConnect("Auth0", options =>
                 {
                     // Set the authority to your Auth0 domain
-                    options.Authority = $"https://{Configuration["Auth0:Domain"]}";
+                    options.Authority = auth0Config.Domain;
 
                     // Configure the Auth0 Client ID and Client Secret
-                    options.ClientId = Configuration["Auth0:ClientId"];
-                    options.ClientSecret =  Environment.GetEnvironmentVariable("Auth0ClientSecret");
+                    options.ClientId = auth0Config.ClientId;
+                    options.ClientSecret =  auth0Config.ClientSecret;
                     
                     // Set response type to code
                     options.ResponseType = OpenIdConnectResponseType.Code;
-                    
+
                     // Configure the scope
                     options.Scope.Clear();
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");
+                    options.Scope.Add("email");
 
                     // Set the callback path, so Auth0 will call back to http://localhost:3000/callback
                     // Also ensure that you have added the URL as an Allowed Callback URL in your Auth0 dashboard

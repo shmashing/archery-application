@@ -2,7 +2,9 @@
 @using ArcheryTracker.Logic
 @using ArcheryTracker.Logic.Models
 @using ArcheryTracker.App.Util
+@using Microsoft.AspNetCore.Http
 
+@inject NavigationManager NavigationManager
 @inject UserService UserService
 @inject IdentityService IdentityService
 
@@ -14,6 +16,7 @@
 }
 else
 {
+    <h2> Welcome, @_user.Name</h2>
     <p>Total Shots: [placeholder]</p>
     <p>Shots Per Session: [placeholder]</p>
     <p>Total Shots This Month: [placeholder]</p>
@@ -22,11 +25,21 @@ else
 }
 
 @code {
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    
     private User _user { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var userId = await IdentityService.GetLoggedInUserId();
-        _user = await UserService.GetUser(userId, "kyle", "fake_email");
+        var authState = await AuthenticationStateTask;
+        var userId = IdentityService.GetLoggedInUserId(authState);
+        
+        if (IdentityService.IsFirstLogin(authState) && !(await UserService.UserExists(userId)))
+        {
+            NavigationManager.NavigateTo("/profile?FreshSignup=true");
+        }
+        
+        _user = await UserService.GetUser(userId);
     }
 }

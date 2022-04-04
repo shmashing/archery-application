@@ -18,7 +18,7 @@ namespace ArcheryTracker.App.Requests
         public Session ToSession()
         {
             var id = IdService.GetId(typeof(Session));
-            var session = new Session(id, UserId, Date);
+            var session = new Session(id, UserId, Date.ToUniversalTime());
             return session;
         }
     }

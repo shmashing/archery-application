@@ -2,6 +2,7 @@
 @using ArcheryTracker.App.Requests
 @using ArcheryTracker.App.Util
 @using ArcheryTracker.Logic
+@using ArcheryTracker.Logic.Models
 
 @inject NavigationManager NavigationManager
 @inject SessionService SessionService
@@ -27,11 +28,23 @@
 </EditForm>
 
 @code {
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private string _userId { get; set; }
+    private bool _sessionIsToday = true;
+
     private CreateSessionRequest _createSessionRequest = new CreateSessionRequest()
     {
         Date = DateTime.Now.AddDays(-1),
     };
-    private bool _sessionIsToday = true;
+    
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateTask;
+        _userId = IdentityService.GetLoggedInUserId(authState);
+    }
 
     public async Task HandleFormSubmit()
     {
@@ -40,8 +53,7 @@
             _createSessionRequest.Date = DateTime.Now;
         }
 
-        var userId = await IdentityService.GetLoggedInUserId();
-        _createSessionRequest.UserId = userId;
+        _createSessionRequest.UserId = _userId;
         var sessionId = await SessionService.CreateSession(_createSessionRequest.ToSession());
         NavigationManager.NavigateTo($"/Session/{sessionId}");
     }

@@ -18,7 +18,9 @@ namespace ArcheryTracker.Logic.Repository
 
         public async Task<List<Session>> GetSessionsForUser(string userId)
         {
-            return await _databaseContext.Sessions.Where(s => s.UserId == userId).ToListAsync();
+            return await _databaseContext.Sessions.Where(s => s.UserId == userId)
+                .OrderByDescending(s => s.Date)
+                .ToListAsync();
         }
 
         public async Task<Session> GetSession(string sessionId)

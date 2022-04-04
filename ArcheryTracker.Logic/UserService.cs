@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using ArcheryTracker.Logic.Models;
 using ArcheryTracker.Logic.Repository;
@@ -12,25 +13,31 @@ namespace ArcheryTracker.Logic
         {
             _userRepository = userRepository;
         }
-        
-        public async Task<User> GetUser(string id, string name, string email)
+
+        public async Task<User> InitializeAndGetUser(Auth0User auth0User)
         {
-            await WriteOrUpdateUser(id, name, email);
+            if (await UserExists(auth0User.Id))
+            {
+                return await GetUser(auth0User.Id);
+            }
+            
+            var newUser = new User(auth0User.Id, auth0User.Name, auth0User.Email, DateTime.Now.ToUniversalTime());
+            return await _userRepository.CreateUser(newUser);
+        }
+        
+        public async Task<User> GetUser(string id)
+        {
             return await _userRepository.GetUser(id);
         }
 
-        private async Task WriteOrUpdateUser(string userId, string name, string email)
+        public async Task<User> UpdateAndGetUser(User user)
         {
-            var userExists = await _userRepository.UserExists(userId);
-            if (userExists)
-            {
-                await _userRepository.UpdateUserLogin(userId);
-            }
-            else
-            {
-                var user = new User(userId, name, email);
-                await _userRepository.CreateUser(user);
-            }
+            return await _userRepository.UpdateAndGetUser(user);
+        }
+
+        public async Task<bool> UserExists(string id)
+        {
+            return await _userRepository.UserExists(id);
         }
     }
 }

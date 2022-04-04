@@ -28,6 +28,13 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Include="..\..\..\..\Downloads\favicon_io (2)\android-chrome-512x512.png">
+      <Link>wwwroot\android-chrome-512x512.png</Link>
+    </Content>
+    <Content Update="Pages\Profile.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <Target Name="PrePublishTarget" AfterTargets="Publish">
