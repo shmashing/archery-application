@@ -1,0 +1,77 @@
+@page "/profile"
+@using ArcheryTracker.App.Util
+@using ArcheryTracker.Logic
+@using ArcheryTracker.Logic.Models
+@using System.ComponentModel
+@using ArcheryTracker.App.Requests
+@using Timer = System.Timers.Timer
+
+@inject UserService UserService
+@inject IdentityService IdentityService
+
+<EditForm Model="@_updateUserRequest" OnValidSubmit="@HandleValidFormSubmit">
+    <div>
+        <p>Name: <input type="text" @bind="_updateUserRequest.Name" /></p>
+        <p>Email: <input type="text" @bind="_updateUserRequest.Email" disabled /></p>
+    </div>
+    <button class="btn-main-primary" type="submit">Update Info</button>
+    @if (_modelUpdated)
+    {
+        <p class="alert successful">Changes saved!</p>
+    }
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    
+    [Parameter]
+    [SupplyParameterFromQuery]
+    [DefaultValue(false)]
+    public bool FreshSignup { get; set; }
+    
+    private UpdateUserRequest _updateUserRequest { get; set; }
+    private bool _modelUpdated;
+    private User _user { get; set; }
+
+    private readonly Timer _notificationTimer = new Timer(15 * 1000);
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateTask;
+        var auth0User = IdentityService.GetLoggedInUser(authState, FreshSignup);
+        _notificationTimer.Elapsed += (sender, eventArgs) => TimerCallback();
+        _updateUserRequest = new UpdateUserRequest();
+
+        if (FreshSignup)
+        {
+            FreshSignup = false;
+            _user = await UserService.InitializeAndGetUser(auth0User);
+        }
+        else
+        {
+            _user = await UserService.GetUser(auth0User.Id);
+        }
+        
+        _updateUserRequest.UserId = _user.Id;
+        _updateUserRequest.Name = _user.Name;
+        _updateUserRequest.Email = _user.Email;
+    }
+
+    private async Task HandleValidFormSubmit()
+    {
+        _updateUserRequest.Email = _user.Email;
+        _user = await UserService.UpdateAndGetUser(_updateUserRequest.ToUser());
+        _modelUpdated = true;
+        _notificationTimer.Start();
+    }
+
+    private void TimerCallback()
+    {
+        _ = InvokeAsync(() =>
+        {
+            _modelUpdated = false;
+            StateHasChanged();
+        });
+    }
+}

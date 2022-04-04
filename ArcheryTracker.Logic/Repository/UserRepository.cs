@@ -1,9 +1,7 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using ArcheryTracker.Logic.Database;
 using ArcheryTracker.Logic.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace ArcheryTracker.Logic.Repository
 {
@@ -32,15 +30,32 @@ namespace ArcheryTracker.Logic.Repository
             await _databaseContext.SaveChangesAsync();
         }
 
-        public async Task CreateUser(User user)
+        public async Task<User> CreateUser(User user)
         {
             await _databaseContext.Users.AddAsync(user);
             await _databaseContext.SaveChangesAsync();
+
+            await UpdateUserLogin(user.Id);
+
+            return await _databaseContext.Users.FindAsync(user.Id);
         }
 
         public async Task<User> GetUser(string userId)
         {
             return await _databaseContext.Users.FindAsync(userId);
+        }
+
+        public async Task<User> UpdateAndGetUser(User user)
+        {
+            var oldUserEntry = await _databaseContext.Users.FindAsync(user.Id);
+            oldUserEntry.Email = user.Email;
+            oldUserEntry.Name = user.Name;
+            oldUserEntry.LastLogin = user.LastLogin;
+            
+            _databaseContext.Users.Update(oldUserEntry);
+            await _databaseContext.SaveChangesAsync();
+
+            return await _databaseContext.Users.FindAsync(user.Id);
         }
     }
 }

@@ -32,10 +32,10 @@ else
         {
             var sessionUrl = $"/Session/{session.Id}";
             <tr>
-                <td><a href=@sessionUrl>@string.Format($"{session.Date.Month}/{session.Date.Day}/{session.Date.Year}")</a></td>
-                <td>@session.Date</td>
+                <td>@session.Date.ToString("MM/dd/yyyy")</td>
                 <td>[placeholder]</td>
                 <td>[placeholder]</td>
+                <td><a href=@sessionUrl>Session Details <span class="oi oi-chevron-right" ></span></a></td>
             </tr>
         }
         </tbody>
@@ -44,13 +44,17 @@ else
 }
 
 @code {
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    
     private string _userId;
     private List<Session> _sessions;
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("initializing user sessions");
-        _userId = await IdentityService.GetLoggedInUserId();
+        var authState = await AuthenticationStateTask;
+        
+        _userId = IdentityService.GetLoggedInUserId(authState);
         _sessions = await SessionService.GetSessionsForUser(_userId);
     }
 }
