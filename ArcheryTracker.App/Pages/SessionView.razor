@@ -20,9 +20,9 @@ else
         NavigationManager.NavigateTo("/NotFound");
     }
     
-    <p>Total Shots: [placeholder]</p>
-    <p>Best round score: [placeholder]</p>
-    <p>Average round score: [placeholder]</p>
+    <p>Total Shots: @_session.</p>
+    <p>Best round score: @_rounds.Max(r => r.Scores.Sum())</p>
+    <p>Average round score: @_rounds.Average(r => r.Scores.Sum())</p>
                                                        
     @if (_rounds != null && _rounds.Count != 0)
     {
