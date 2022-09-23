@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ArcheryTracker.Logic.Models;
 using ArcheryTracker.Logic.Repository;
@@ -8,12 +9,14 @@ namespace ArcheryTracker.Logic
     public class UserService
     {
         private readonly UserRepository _userRepository;
-        private readonly UserStatsRepository _userStatsRepository;
+        private readonly SessionRepository _sessionRepository;
+        private readonly RoundRepository _roundRepository;
 
-        public UserService(UserRepository userRepository, UserStatsRepository userStatsRepository)
+        public UserService(UserRepository userRepository, SessionRepository sessionRepository, RoundRepository roundRepository)
         {
             _userRepository = userRepository;
-            _userStatsRepository = userStatsRepository;
+            _sessionRepository = sessionRepository;
+            _roundRepository = roundRepository;
         }
 
         public async Task<User> InitializeAndGetUser(Auth0User auth0User)
@@ -44,7 +47,30 @@ namespace ArcheryTracker.Logic
 
         public async Task<UserStats> GetUserStats(string userId)
         {
-            return await _userStatsRepository.GetUsersStats(userId);
+            var userSessions = await _sessionRepository.GetSessionsForUser(userId);
+            var usersRounds = await _roundRepository.GetAllRoundsForUsers(userId);
+            
+            var sessionsThisMonth = userSessions.Where(s => s.Date.Month == DateTime.Now.Month).Select(s => s.Id);
+            var userRoundsThisMonth = usersRounds.Where(r => sessionsThisMonth.Contains(r.SessionId));
+
+            var totalShots = usersRounds.Sum(r => r.Scores.Count);
+            var totalShotsThisMonth = userRoundsThisMonth.Sum(r => r.Scores.Count);
+            var totalShotsOnTarget = usersRounds.Sum(r => r.Scores.Count(s => s > 0));
+            var totalBullseye = usersRounds.Sum(r => r.Scores.Count(s => s == 2));
+
+            var shotsPerSession = ((double)totalShots / userSessions.Count);
+            var overallAccuracy = ((double)totalShotsOnTarget / totalShots);
+            var overallBullseyeAccuracy = ((double)totalBullseye / totalShots);
+            
+            return new UserStats(
+                userId, 
+                totalShots,
+                totalShotsThisMonth,
+                totalShotsOnTarget,
+                totalBullseye,
+                shotsPerSession,
+                overallAccuracy,
+                overallBullseyeAccuracy);
         }
     }
 }

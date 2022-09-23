@@ -54,7 +54,6 @@ namespace ArcheryTracker.App
             // Register Data Repositories
             services.AddTransient<UserRepository>();
             services.AddTransient<SessionRepository>();
-            services.AddTransient<UserStatsRepository>();
             services.AddTransient<RoundRepository>();
             
             // Register Services

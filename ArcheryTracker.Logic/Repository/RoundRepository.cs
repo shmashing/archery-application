@@ -26,5 +26,10 @@ namespace ArcheryTracker.Logic.Repository
         {
             return await _databaseContext.Rounds.Where(r => r.SessionId == sessionId).ToListAsync();
         }
+
+        public async Task<List<Round>> GetAllRoundsForUsers(string userId)
+        {
+            return await _databaseContext.Rounds.Where(r => r.UserId == userId).ToListAsync();
+        }
     }
 }
