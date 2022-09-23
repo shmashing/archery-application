@@ -8,7 +8,6 @@ namespace ArcheryTracker.Logic.Database
 public class DatabaseContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<UserStats> UserStats { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<Round> Rounds { get; set; }
 
