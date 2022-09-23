@@ -2,7 +2,6 @@
 @using ArcheryTracker.Logic
 @using ArcheryTracker.Logic.Models
 @using ArcheryTracker.App.Util
-@using Microsoft.AspNetCore.Http
 
 @inject NavigationManager NavigationManager
 @inject UserService UserService
@@ -17,11 +16,33 @@
 else
 {
     <h2> Welcome, @_user.Name</h2>
-    <p>Total Shots: [placeholder]</p>
-    <p>Shots Per Session: [placeholder]</p>
-    <p>Total Shots This Month: [placeholder]</p>
-    <p>Overall Accuracy: [placeholder]</p>
-    <p>Bullseye Percentage: [placeholder]</p>
+    <div class="table-responsive">
+        <table class="table">
+            <tbody>
+            <tr>
+                <td>Total Shots</td>
+                <td>@_userStats.TotalShots</td>
+            </tr>
+            <tr>
+                <td>Shots Per Session</td>
+                <td>@_userStats.ShotsPerSession</td>
+            </tr>
+            <tr>
+                <td>Total Shots This Month</td>
+                <td>@_userStats.ShotsThisMonth</td>
+            </tr>
+            <tr>
+                <td>Overall Accuracy</td>
+                <td>@Math.Round(_userStats.OverallAccuracy, 2)</td>
+            </tr>
+            <tr>
+                <td>Bullseye Percentage</td>
+                <td>@Math.Round(_userStats.OverallBullseyeAccuracy, 2)</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
 }
 
 @code {
@@ -29,6 +50,7 @@ else
     Task<AuthenticationState> AuthenticationStateTask { get; set; }
     
     private User _user { get; set; }
+    private UserStats _userStats { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -41,5 +63,6 @@ else
         }
         
         _user = await UserService.GetUser(userId);
+        _userStats = await UserService.GetUserStats(userId);
     }
 }

@@ -26,12 +26,21 @@ namespace ArcheryTracker.Logic
 
         public async Task<List<Session>> GetSessionsForUser(string userId)
         {
-            return await _sessionRepository.GetSessionsForUser(userId);
+            var sessions = await _sessionRepository.GetSessionsForUser(userId);
+
+            foreach (var session in sessions)
+            {
+                await SetSessionDetails(session);
+            }
+
+            return sessions;
         }
         
         public async Task<Session> GetSession(string id)
         {
-            return await _sessionRepository.GetSession(id);
+            var session = await _sessionRepository.GetSession(id);
+            await SetSessionDetails(session);
+            return session;
         }
 
         public async Task<List<Round>> GetRoundsForSession(string sessionId)
@@ -43,6 +52,15 @@ namespace ArcheryTracker.Logic
         {
             await _roundRepository.CreateRound(round);
             return await _sessionRepository.GetSession(sessionId);
+        }
+
+        private async Task<Session> SetSessionDetails(Session session)
+        {
+            var sessionRounds = await _roundRepository.GetRoundsForSession(session.Id);
+            session.TotalShots = sessionRounds.Sum(r => r.Scores.Count);
+            session.OnTargetAccuracy = sessionRounds.Sum(r => r.Scores.Count(shot => shot != 0));
+
+            return session;
         }
     }
 }
